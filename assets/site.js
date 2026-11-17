@@ -192,7 +192,6 @@
         dem: { type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], encoding: 'terrarium', tileSize: 256, maxzoom: 14, attribution: 'Relevo: Terrain Tiles (AWS / Mapzen)' }
       },
       layers: [
-        { id: 'bg', type: 'background', paint: { 'background-color': '#1B2A22' } },
         { id: 'satlow', type: 'raster', source: 'satlow', paint: { 'raster-fade-duration': 0 } },
         { id: 'sat', type: 'raster', source: 'sat', paint: { 'raster-fade-duration': 300 } },
         { id: 'ref', type: 'raster', source: 'ref', paint: { 'raster-opacity': 0.9 } }
