@@ -165,17 +165,17 @@
 
   var PLACES = [
     { name: 'Maricá', kicker: 'Exemplo · Maricá, RJ', lat: -22.9187, lng: -42.8186, zoom: 14.2, main: true },
-    { name: 'Rio de Janeiro', kicker: 'Praia de Copacabana', lat: -22.9711, lng: -43.1822, zoom: 15.2 },
-    { name: 'São Paulo', kicker: 'Avenida Paulista', lat: -23.5614, lng: -46.6559, zoom: 15.4 },
+    { name: 'Rio de Janeiro', kicker: 'Praia de Copacabana', lat: -22.9711, lng: -43.1822, zoom: 14.6 },
+    { name: 'São Paulo', kicker: 'Avenida Paulista', lat: -23.5614, lng: -46.6559, zoom: 14.6 },
     { name: 'Brasília', kicker: 'Esplanada dos Ministérios', lat: -15.7997, lng: -47.8645, zoom: 14.8 },
-    { name: 'Belo Horizonte', kicker: 'Praça da Liberdade', lat: -19.9320, lng: -43.9380, zoom: 15.6 },
-    { name: 'Salvador', kicker: 'Pelourinho', lat: -12.9714, lng: -38.5080, zoom: 15.8 },
-    { name: 'Recife', kicker: 'Marco Zero', lat: -8.0631, lng: -34.8711, zoom: 15.6 },
-    { name: 'Fortaleza', kicker: 'Avenida Beira-Mar', lat: -3.7253, lng: -38.4920, zoom: 15.2 },
-    { name: 'Belém', kicker: 'Mercado Ver-o-Peso', lat: -1.4528, lng: -48.5040, zoom: 15.6 },
-    { name: 'Manaus', kicker: 'Teatro Amazonas', lat: -3.1303, lng: -60.0234, zoom: 15.6 },
-    { name: 'Curitiba', kicker: 'Jardim Botânico', lat: -25.4419, lng: -49.2389, zoom: 15.6 },
-    { name: 'Porto Alegre', kicker: 'Orla do Guaíba', lat: -30.0340, lng: -51.2410, zoom: 15.2 }
+    { name: 'Belo Horizonte', kicker: 'Praça da Liberdade', lat: -19.9320, lng: -43.9380, zoom: 14.6 },
+    { name: 'Salvador', kicker: 'Pelourinho', lat: -12.9714, lng: -38.5080, zoom: 14.6 },
+    { name: 'Recife', kicker: 'Marco Zero', lat: -8.0631, lng: -34.8711, zoom: 14.6 },
+    { name: 'Fortaleza', kicker: 'Avenida Beira-Mar', lat: -3.7253, lng: -38.4920, zoom: 14.6 },
+    { name: 'Belém', kicker: 'Mercado Ver-o-Peso', lat: -1.4528, lng: -48.5040, zoom: 14.6 },
+    { name: 'Manaus', kicker: 'Teatro Amazonas', lat: -3.1303, lng: -60.0234, zoom: 14.6 },
+    { name: 'Curitiba', kicker: 'Jardim Botânico', lat: -25.4419, lng: -49.2389, zoom: 14.6 },
+    { name: 'Porto Alegre', kicker: 'Orla do Guaíba', lat: -30.0340, lng: -51.2410, zoom: 14.6 }
   ];
 
   function fmt(v, pos, neg) { var a = Math.abs(v), d = Math.floor(a), m = Math.round((a - d) * 60); if (m === 60) { d++; m = 0; } return d + '°' + (m < 10 ? '0' : '') + m + '′ ' + (v < 0 ? neg : pos); }
