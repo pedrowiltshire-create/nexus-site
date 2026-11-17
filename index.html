@@ -85,7 +85,22 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 </style>
 <style>
 
-@media (max-width: 880px){nav[aria-label="Principal"]{display:none!important}}
+@media (max-width: 900px){nav[aria-label="Principal"]{display:none!important}}
+
+/* ---------- menu mais leve ---------- */
+.pg-bar{background:linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,.025) 45%,rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 18px 50px -28px rgba(0,0,0,.7)!important;-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+.pg-bar::before{background:linear-gradient(140deg,rgba(255,255,255,.35),rgba(255,255,255,.04) 30%,rgba(255,255,255,0) 60%,rgba(255,255,255,.14))!important}
+.pg-bar::after{opacity:.5}
+.pg-light .pg-bar{background:linear-gradient(150deg,rgba(255,255,255,.72),rgba(255,255,255,.5))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 16px 40px -26px rgba(20,50,90,.35)!important}
+.pg-menu{display:flex;align-items:center;gap:0;font-size:14px;font-weight:450;letter-spacing:.005em}
+.pg-menu .pg-nav{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;color:var(--t4);text-decoration:none}
+.pg-menu .pg-nav:hover{color:var(--t1)!important}
+.pg-icobtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--t4);cursor:pointer;transition:background-color .25s ease,color .25s ease}
+.pg-icobtn:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.pg-light .pg-icobtn:hover{background:rgba(11,22,38,.06)}
+.pg-access{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px 0 18px;border-radius:999px;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
+.pg-hdr.compact .pg-bar{max-width:900px!important}
+.pg-hdr.dock .pg-bar{max-width:760px!important}
 /* ---------- ícone do botão de tema ---------- */
 .pg-dark .pg-ico-moon{display:none}.pg-light .pg-ico-sun{display:none}
 
@@ -157,22 +172,23 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 <!-- ================= TOPO (barra de vidro) ================= -->
 <div id="pg-prog" aria-hidden="true" style="position: fixed; left: 0; top: 0; z-index: 40; height: 2px; width: 0%; background: linear-gradient(90deg, #1E88C7, #7CC3F5); box-shadow: 0 0 12px rgba(62,155,234,0.8)"></div>
-<header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 14px 20px 0">
-<div class="lg pg-bar" style="max-width: 1200px; margin: 0 auto; border-radius: 999px; padding: 8px 8px 8px 22px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 24px">
+<header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 16px 20px 0">
+<div class="lg pg-bar" style="max-width: 1040px; margin: 0 auto; border-radius: 999px; padding: 4px 4px 4px 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 12px">
 <span class="pg-ring" aria-hidden="true"></span>
-<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 44px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 30px; letter-spacing: -1.2px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
-<nav aria-label="Principal" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font-size: 14.5px; font-weight: 500">
-<a class="pg-nav" href="#solucoes" style="color: var(--t3); text-decoration: none; padding: 11px 14px">Soluções</a>
-<a class="pg-nav" href="#funcionalidades" style="color: var(--t3); text-decoration: none; padding: 11px 14px">Funcionalidades</a>
-<a class="pg-nav" href="#psicossocial" style="color: var(--t3); text-decoration: none; padding: 11px 14px">Riscos psicossociais</a>
-<a class="pg-nav" href="#seguranca-info" style="color: var(--t3); text-decoration: none; padding: 11px 14px">Segurança da informação</a>
+<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 40px; padding: 0 6px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: -1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="13.4" height="13.4" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
+<nav aria-label="Principal" class="pg-menu">
+<a class="pg-nav" href="#solucoes">Soluções</a>
+<a class="pg-nav" href="#funcionalidades">Funcionalidades</a>
+<a class="pg-nav" href="#psicossocial">Riscos psicossociais</a>
+<a class="pg-nav" href="#seguranca-info">Segurança</a>
+<a class="pg-nav" href="#contato">Contato</a>
 </nav>
-<div style="display: flex; align-items: center; gap: 8px">
-<button id="pg-theme" class="lg lg-btn" type="button" aria-label="Ativar modo claro" title="Ativar modo claro" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; color: var(--t1); cursor: pointer">
-<svg class="pg-ico-sun" aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2"></path><path d="M12 19.5v2"></path><path d="M4.6 4.6l1.4 1.4"></path><path d="M18 18l1.4 1.4"></path><path d="M2.5 12h2"></path><path d="M19.5 12h2"></path><path d="M4.6 19.4L6 18"></path><path d="M18 6l1.4-1.4"></path></svg>
-<svg class="pg-ico-moon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+<div style="display: flex; align-items: center; gap: 4px">
+<button id="pg-theme" class="pg-icobtn" type="button" aria-label="Ativar modo claro" title="Ativar modo claro">
+<svg class="pg-ico-sun" aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2"></path><path d="M12 19.5v2"></path><path d="M4.6 4.6l1.4 1.4"></path><path d="M18 18l1.4 1.4"></path><path d="M2.5 12h2"></path><path d="M19.5 12h2"></path><path d="M4.6 19.4L6 18"></path><path d="M18 6l1.4-1.4"></path></svg>
+<svg class="pg-ico-moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
 </button>
-<a class="lg lg-tint lg-btn" href="#contato" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 14.5px; font-weight: 700">Fale conosco<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="lg lg-tint lg-btn pg-access" href="https://progeosolutions.com/CentralPGR/login.php">Acessar o Nexus<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
 </div>
 </div>
 </header>
@@ -224,10 +240,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 <article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 250px"><div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--t1)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3"></path><path d="M19 9l3 3-3 3"></path><path d="M2 12h20"></path><path d="M9 5l3-3 3 3"></path><path d="M9 19l3 3 3-3"></path></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">03</span></div><h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">Socioambiental</h3><p style="margin: 0; font-size: 15px; color: var(--t3)">Rastreabilidade com balanço de massa para Madeira Controlada e Cadeia de Custódia FSC, com validação de fornecedores.</p></article>
 <article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 250px"><div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--t1)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h4"></path></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">04</span></div><h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">RH</h3><p style="margin: 0; font-size: 15px; color: var(--t3)">Um só cadastro de colaboradores, cargos e estrutura, que alimenta Segurança, Saúde e eSocial sem planilhas paralelas.</p></article>
 </div>
-<div data-rv="" class="lg" style="margin-top: 16px; padding: 22px 26px; border-radius: 26px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
-<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-weight: 600; font-size: 17px; color: var(--t1)">Já usa o CentralPGR?</span><span style="font-size: 14.5px; color: var(--t4)">Acesse o módulo de segurança com o e-mail cadastrado.</span></span>
-<a class="lg lg-tint lg-btn" href="https://progeosolutions.com/CentralPGR/login.php" style="display: inline-flex; align-items: center; gap: 10px; min-height: 50px; padding: 0 24px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 15.5px; font-weight: 700">Acessar o CentralPGR<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
-</div>
+
 </section>
 
 <!-- ================= RISCOS PSICOSSOCIAIS (vidro sobre fundo colorido) ================= -->
@@ -395,6 +408,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 </div>
 <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-<script src="assets/site.js?v=7"></script>
+<script src="assets/site.js?v=8"></script>
 </body>
 </html>
