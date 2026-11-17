@@ -87,9 +87,9 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 /* ---------- menu no estilo "pílula" ---------- */
 .pg-bar{position:relative;max-width:1240px;margin:0 auto;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px 6px 6px 8px;border-radius:999px;border:1px solid transparent;background:transparent;transition:max-width .55s cubic-bezier(.2,.7,.2,1),background-color .4s ease,border-color .4s ease,box-shadow .4s ease,padding .4s ease}
 .pg-menu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);font-size:13.5px;font-weight:450}
-.pg-menu .pg-nav{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;color:var(--t4);text-decoration:none;transition:color .2s ease,background-color .2s ease}
+.pg-menu .pg-nav{display:inline-flex;align-items:center;white-space:nowrap;min-height:36px;padding:0 14px;border-radius:999px;color:var(--t4);text-decoration:none;transition:color .2s ease,background-color .2s ease}
 .pg-menu .pg-nav:hover{color:var(--t1)!important;background:rgba(255,255,255,.06)}
-.pg-actions{display:flex;align-items:center;gap:8px}
+.pg-actions{flex:none;display:flex;align-items:center;gap:8px}
 .pg-icobtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--t4);cursor:pointer;transition:background-color .25s ease,color .25s ease}
 .pg-icobtn:hover{background:rgba(255,255,255,.07);color:var(--t1)}
 .pg-btn-ghost,.pg-btn-solid{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .25s cubic-bezier(.2,.7,.2,1),background-color .25s ease,border-color .25s ease,box-shadow .25s ease}
@@ -98,9 +98,9 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 .pg-btn-solid{color:#0B1626;background:#EAF3FC;border:1px solid #EAF3FC;box-shadow:0 8px 24px -12px rgba(124,195,245,.6)}
 .pg-btn-solid:hover{color:#0B1626;background:#FFFFFF;transform:translateY(-1px);box-shadow:0 12px 30px -12px rgba(124,195,245,.8)}
 /* ao rolar, a barra vira uma pílula de vidro */
-.pg-hdr.compact .pg-bar,.pg-hdr.dock .pg-bar{max-width:980px;padding:5px 5px 5px 16px;background:rgba(10,16,28,.72);border-color:rgba(124,195,245,.16);box-shadow:0 16px 44px rgba(2,6,14,.55),inset 0 1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.pg-hdr.compact .pg-bar,.pg-hdr.dock .pg-bar{max-width:1120px;padding:5px 5px 5px 16px;background:rgba(10,16,28,.72);border-color:rgba(124,195,245,.16);box-shadow:0 16px 44px rgba(2,6,14,.55),inset 0 1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
 .pg-hdr.compact .pg-menu,.pg-hdr.dock .pg-menu{background:transparent;border-color:transparent}
-.pg-hdr.dock .pg-bar{max-width:880px}
+.pg-hdr.dock .pg-bar{max-width:1120px}
 /* modo claro */
 .pg-light .pg-menu{background:rgba(11,22,38,.035);border-color:rgba(11,22,38,.1)}
 .pg-light .pg-menu .pg-nav:hover{background:rgba(11,22,38,.05)}
@@ -110,11 +110,13 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 .pg-light .pg-btn-solid{color:#FFFFFF;background:#0B1626;border-color:#0B1626;box-shadow:0 8px 24px -12px rgba(11,22,38,.5)}
 .pg-light .pg-btn-solid:hover{color:#FFFFFF;background:#1A2B42}
 .pg-light .pg-hdr.compact .pg-bar,.pg-light .pg-hdr.dock .pg-bar{background:rgba(255,255,255,.78);border-color:rgba(11,22,38,.1);box-shadow:0 16px 40px -20px rgba(20,50,90,.35),inset 0 1px 0 #fff}
-@media (max-width: 760px){.pg-btn-ghost{display:none}.pg-bar{gap:8px}}
+@media (max-width: 1180px){.pg-menu .pg-nav{padding:0 10px}.pg-btn-ghost{padding:0 14px}}
+@media (max-width: 1040px){.pg-btn-ghost{display:none}}
+@media (max-width: 760px){.pg-bar{gap:8px}}
 
 /* brilho sutil no logo do menu */
 @keyframes pgLogoGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(62,155,234,.28)) drop-shadow(0 0 18px rgba(62,155,234,.10))}50%{filter:drop-shadow(0 0 9px rgba(110,185,245,.45)) drop-shadow(0 0 26px rgba(62,155,234,.20))}}
-.pg-logo-glow{animation:pgLogoGlow 5s ease-in-out infinite}
+.pg-logo-glow{flex:none;white-space:nowrap;animation:pgLogoGlow 5s ease-in-out infinite}
 .pg-light .pg-logo-glow{animation:none;filter:drop-shadow(0 0 8px rgba(30,136,199,.22))}
 @media (prefers-reduced-motion: reduce){.pg-logo-glow{animation:none;filter:drop-shadow(0 0 7px rgba(62,155,234,.32))}}
 /* ---------- ícone do botão de tema ---------- */
@@ -425,6 +427,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 </div>
 <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-<script src="assets/site.js?v=10"></script>
+<script src="assets/site.js?v=11"></script>
 </body>
 </html>
