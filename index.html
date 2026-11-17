@@ -138,9 +138,16 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 
 @media (max-width: 760px){
-  .pg-mappanel{left:10px;right:10px;top:10px;bottom:auto;width:auto;max-height:46%}
-  .pg-placecard{left:10px;right:10px;bottom:10px;max-width:none}
-  .pg-mapframe{height:640px}
+  .pg-mapframe{height:620px;border-radius:24px}
+  .pg-mappanel{left:10px;right:10px;top:10px;bottom:auto;width:auto;padding:6px;border-radius:999px}
+  .pg-mp-title,.pg-mp-sep,.pg-switch{display:none}
+  .pg-places{flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:4px;scrollbar-width:none}
+  .pg-places::-webkit-scrollbar{display:none}
+  .pg-place{flex:none;width:auto;min-height:44px;padding:0 14px;border-radius:999px;white-space:nowrap;font-size:14px}
+  .pg-place small{display:none}
+  .pg-placecard{left:10px;right:10px;bottom:10px;max-width:none;padding:14px 16px;gap:10px;border-radius:22px}
+  #pg-pc-name{font-size:20px!important}
+  .maplibregl-ctrl-top-right{top:64px}
 }
 @media (prefers-reduced-motion: reduce){.pg-mk::after,.pg-placecard,.pg-sv-box,.pg-sv-back{animation:none!important}}
 </style>
@@ -359,6 +366,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 </div>
 <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-<script src="assets/site.js?v=5"></script>
+<script src="assets/site.js?v=6"></script>
 </body>
 </html>

@@ -206,7 +206,6 @@
         'CooperativeGesturesHandler.MobileHelpText': 'Use dois dedos para mover o mapa'
       }
     });
-    window.__nexusMap = map;
     map.addControl(new mgl.NavigationControl({ visualizePitch: true }), 'top-right');
     map.addControl(new mgl.FullscreenControl(), 'top-right');
     var terrainOn = true, orbitOn = !reduce, current = null;
