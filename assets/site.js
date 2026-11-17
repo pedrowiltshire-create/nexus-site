@@ -265,17 +265,7 @@
       return Promise.all(urls.map(function (u) { return new Promise(function (ok) { var im = new Image(); im.crossOrigin = 'anonymous'; im.onload = im.onerror = ok; im.src = u; }); }));
     }
     function withTimeout(pr, ms) { return Promise.race([pr, new Promise(function (ok) { setTimeout(ok, ms); })]); }
-    function terrainRamp(my) {
-      if (!terrainOn || my !== token) return;
-      var t0 = performance.now(), D = 1600;
-      try { map.setTerrain({ source: 'dem', exaggeration: 0.001 }); } catch (e) { return; }
-      (function step() {
-        if (my !== token) return;
-        var k = Math.min(1, (performance.now() - t0) / D), e = 1 - Math.pow(1 - k, 3);
-        try { map.setTerrain({ source: 'dem', exaggeration: Math.max(0.001, 1.35 * e) }); } catch (er) { return; }
-        if (k < 1) requestAnimationFrame(step);
-      })();
-    }
+    function terrainOnNow() { if (!terrainOn) return; try { if (!map.getTerrain || !map.getTerrain()) map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {} }
     var token = 0; // cada voo/interação gera um novo "token"; animações antigas param sozinhas
     function fly(i) {
       var p = PLACES[i]; current = p;
@@ -299,11 +289,13 @@
           // 2º: quando o local já está carregado, mergulha inclinando a câmera e liga o relevo 3D
           var go = function () {
             if (my !== token) return;
-            terrainRamp(my);
             map.easeTo({ zoom: p.zoom, pitch: 64, bearing: bearing, duration: 2600, easing: function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, essential: true });
             map.once('moveend', function () { if (my === token) setTimeout(function () { startOrbit(my); }, 300); });
           };
-          if (map.areTilesLoaded()) go(); else { var done = false; var f = function () { if (!done) { done = true; go(); } }; map.once('idle', f); setTimeout(f, 1500); }
+          // liga o relevo ainda com a câmera quase reta e espera ele carregar antes de inclinar
+          terrainOnNow();
+          var done = false; var f = function () { if (!done) { done = true; go(); } };
+          map.once('idle', f); setTimeout(f, 1800);
         });
       });
     }
@@ -326,7 +318,7 @@
         sw.setAttribute('aria-checked', on ? 'true' : 'false');
         var k = sw.getAttribute('data-layer');
         if (k === 'ref') map.setLayoutProperty('ref', 'visibility', on ? 'visible' : 'none');
-        if (k === 'terrain') { terrainOn = on; if (on) terrainRamp(token); else { try { map.setTerrain(null); } catch (e) {} } }
+        if (k === 'terrain') { terrainOn = on; if (on) terrainOnNow(); else { try { map.setTerrain(null); } catch (e) {} } }
         if (k === 'orbit') { orbitOn = on; token++; if (on) startOrbit(token); else map.stop(); }
       });
     });
