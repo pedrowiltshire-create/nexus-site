@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nexus – Geotecnologia</title>
+<meta name="description" content="Geotecnologia, SIG e sensoriamento remoto: localize o presente para criar o futuro.">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600&amp;family=Inter+Tight:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050912}
+html{scroll-behavior:smooth}
+a{color:#8CC8F2}a:hover{color:#FFFFFF}
+
+.pg-dark{--bg0:rgba(5,9,18,0);--bg:#050912;--t1:#FFFFFF;--t2:#E6ECF2;--t3:#C6D0DA;--t4:#A9B6C2;--t5:#8E9CAA;--acc:#8CC8F2;--ph:#111A26;--line:rgba(255,255,255,0.1);--line2:rgba(255,255,255,0.16);--field:rgba(255,255,255,0.05);--veil1:rgba(5,9,18,0.35);--veil2:rgba(5,9,18,0.55);--sea:#08101C;--land:#18222F;--coast:#5E7F99;--grat:#2A3A4C;--bord:#8AA1B6;--glab:#5D6F82;--dot:#E6ECF2;--cap:#C6D0DA;--mar:#FFD48A;--swoff:rgba(255,255,255,0.18)}
+.pg-light{--bg0:rgba(242,245,249,0);--bg:#F2F5F9;--t1:#0B1626;--t2:#1D2A3A;--t3:#3A4858;--t4:#516072;--t5:#5B6979;--acc:#16649F;--ph:#DCE4ED;--line:rgba(11,22,38,0.12);--line2:rgba(11,22,38,0.16);--field:rgba(255,255,255,0.7);--veil1:rgba(242,245,249,0.15);--veil2:rgba(242,245,249,0.35);--sea:#DCE7F2;--land:#FBFCFD;--coast:#7F9AB3;--grat:#C3D1DF;--bord:#5F7C98;--glab:#6A7C8E;--dot:#0B1626;--cap:#2B3A4B;--mar:#A35F00;--swoff:rgba(11,22,38,0.18)}
+.pg-light .lg{background:linear-gradient(150deg,rgba(255,255,255,.78),rgba(255,255,255,.5) 40%,rgba(255,255,255,.42) 70%,rgba(255,255,255,.62));box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(11,22,38,.05),0 24px 60px -30px rgba(20,50,90,.35)}
+.pg-light .lg::before{background:linear-gradient(140deg,rgba(255,255,255,1),rgba(255,255,255,.3) 30%,rgba(11,22,38,.06) 60%,rgba(255,255,255,.8))}
+.pg-light .lg::after{background-image:radial-gradient(120% 60% at 20% -10%,rgba(255,255,255,.7),rgba(255,255,255,0) 60%)}
+.pg-light .lg.lg-tint{background:linear-gradient(150deg,rgba(60,145,225,.95),rgba(22,104,168,.94) 50%,rgba(16,80,140,.96))}
+.pg-light .lg-btn:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 22px 50px -20px rgba(30,110,200,.45)}
+.pg-light .lg-card:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 40px 80px -40px rgba(20,50,90,.45)}
+.pg-light .pg-nav:hover{background-color:rgba(11,22,38,.06)}
+.pg-light .pg-bg{background-image:radial-gradient(55% 60% at 18% 30%,#D3E6FA 0%,rgba(211,230,250,0) 70%),radial-gradient(50% 55% at 85% 65%,#DCE3FA 0%,rgba(220,227,250,0) 70%),radial-gradient(45% 50% at 50% 100%,#D8EEF6 0%,rgba(216,238,246,0) 70%),linear-gradient(#EEF3F9,#EEF3F9)}
+.pg-light .pg-glow{box-shadow:0 0 90px 16px rgba(62,155,234,0.28),0 0 220px 60px rgba(62,155,234,0.14)!important}
+.pg-light .pg-row:hover{background-color:rgba(11,22,38,.04)!important}
+.pg-bg{background-image:url(assets/fundo-vidro.jpg);background-size:cover;background-position:center}
+.lg{position:relative;isolation:isolate;background:linear-gradient(150deg,rgba(255,255,255,.13),rgba(255,255,255,.045) 38%,rgba(255,255,255,.025) 70%,rgba(255,255,255,.07));-webkit-backdrop-filter:blur(24px) saturate(175%);backdrop-filter:blur(24px) saturate(175%);box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.07),0 30px 70px -30px rgba(0,0,0,.75)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;padding:1px;background:linear-gradient(140deg,rgba(255,255,255,.65),rgba(255,255,255,.08) 30%,rgba(255,255,255,0) 55%,rgba(255,255,255,.28));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.lg::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:radial-gradient(120% 60% at 20% -10%,rgba(255,255,255,.16),rgba(255,255,255,0) 60%) no-repeat;background-size:140% 140%;background-position:0% 0%;pointer-events:none;transition:background-position .7s cubic-bezier(.2,.7,.2,1),opacity .4s ease}
+.lg-tint{background:linear-gradient(150deg,rgba(78,160,235,.92),rgba(26,116,180,.9) 50%,rgba(18,86,148,.94))}
+.lg-btn{transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease,background-color .3s ease}
+.lg-btn:hover{transform:translateY(-2px) scale(1.015);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 22px 50px -18px rgba(43,143,224,.55)}
+.lg-btn:hover::after{background-position:60% 0%}
+.lg-btn:active{transform:translateY(0) scale(.97)}
+.lg-btn svg{transition:transform .3s ease}.lg-btn:hover svg{transform:translateX(3px)}
+.lg-card{transition:transform .45s cubic-bezier(.2,.7,.2,1),box-shadow .45s ease}
+.lg-card:hover{transform:translateY(-6px);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 40px 80px -36px rgba(0,0,0,.85)}
+.lg-card:hover::after{background-position:45% 30%}
+.pg-nav{position:relative;transition:color .25s ease,background-color .25s ease;border-radius:999px}
+.pg-nav:hover{color:#FFFFFF!important;background-color:rgba(255,255,255,.08)}
+.pg-in{transition:border-color .25s ease,box-shadow .25s ease,background-color .25s ease}
+.pg-in:focus{outline:none;border-color:rgba(140,200,242,.7)!important;background-color:rgba(255,255,255,.07)!important;box-shadow:0 0 0 4px rgba(140,200,242,.12)}
+.pg-sw{transition:background-color .3s ease}
+.pg-knob{transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.pg-row{transition:background-color .25s ease}.pg-row:hover{background-color:rgba(255,255,255,.06)!important}
+.pg-zoom img{transition:transform 1s cubic-bezier(.2,.7,.2,1)}.lg-card:hover .pg-zoom img{transform:scale(1.06)}
+a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3px}
+
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes pgSpinB{to{--ang:360deg}}
+@keyframes pgSpin{to{transform:rotate(360deg)}}
+@keyframes pgSpinR{to{transform:rotate(-360deg)}}
+@keyframes pgChip{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pgGlowP{0%,100%{opacity:.85}50%{opacity:1}}
+@keyframes pgDock{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+@keyframes pgShine{to{background-position:200% 0}}
+.pg-spin{animation:pgSpin 60s linear infinite}.pg-spinr{animation:pgSpinR 90s linear infinite}
+.pg-chip{animation:pgChip 7s ease-in-out infinite}
+@media (max-width: 760px){.pg-chip{display:none!important}}
+.pg-glow{animation:pgGlowP 6s ease-in-out infinite}
+.pg-grad{display:inline-block;padding:0 .12em .08em 0;margin:0 -.12em -.08em 0;background:linear-gradient(90deg,#7CC3F5,#FFFFFF 40%,#7CC3F5 60%,#3E9BEA);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:pgShine 6s linear infinite}
+.pg-light .pg-grad{background-image:linear-gradient(90deg,#16649F,#1E88C7 40%,#0B1626 60%,#16649F)}
+.pg-hdr{transition:padding .4s ease}
+.pg-bar{transition:max-width .55s cubic-bezier(.2,.7,.2,1),padding .4s ease}
+.pg-ring{position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:conic-gradient(from var(--ang),transparent 0%,rgba(124,195,245,.75) 12%,rgba(225,242,255,.95) 20%,transparent 34%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .5s ease;animation:pgSpinB 4s linear infinite}
+.pg-hdr.compact{padding-top:10px}
+.pg-hdr.compact .pg-bar{max-width:940px!important}
+.pg-hdr.compact .pg-ring{opacity:1}
+.pg-hdr.dock{top:auto!important;bottom:18px;padding-top:0;animation:pgDock .55s cubic-bezier(.2,.7,.2,1)}
+.pg-hdr.dock .pg-bar{max-width:780px!important}
+.pg-hdr.dock .pg-bar{transition:max-width .55s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1),opacity .35s ease}
+.pg-hdr.dock.away{pointer-events:none}
+.pg-hdr.dock.away .pg-bar{transform:translateY(140%);opacity:0}
+[data-rv]{opacity:0;transform:translateY(38px) scale(.985);filter:blur(5px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1.05s cubic-bezier(.16,.84,.24,1),filter .9s ease}
+[data-rv="in"]{opacity:1;transform:none;filter:blur(0)}
+@keyframes pgUp{from{opacity:0;transform:translateY(24px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes pgFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+@keyframes pgPulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(3);opacity:0}}
+.pg-up{opacity:0;animation:pgUp 1.1s cubic-bezier(.2,.7,.2,1) forwards}
+.pg-float{animation:pgFloat 14s ease-in-out infinite}
+.pg-pulse{transform-box:fill-box;transform-origin:center;animation:pgPulse 2.6s ease-out infinite}
+@media (prefers-reduced-motion: reduce){.pg-up,.pg-float,.pg-pulse,.pg-spin,.pg-spinr,.pg-chip,.pg-glow,.pg-grad,.pg-ring{animation:none!important}.pg-up{opacity:1!important}[data-rv]{opacity:1!important;transform:none!important;filter:none!important}html{scroll-behavior:auto}}
+</style>
+<style>
+/* ---------- ícone do botão de tema ---------- */
+.pg-dark .pg-ico-moon{display:none}.pg-light .pg-ico-sun{display:none}
+
+/* ---------- mapa ---------- */
+.pg-mapframe{position:relative;border-radius:32px;overflow:hidden;background:#0A1424;height:clamp(560px,64vw,760px);box-shadow:0 60px 120px -60px rgba(0,0,0,.9);transform-origin:center top}
+#pg-map{position:absolute;inset:0}
+.pg-mappanel{position:absolute;left:18px;top:18px;bottom:18px;width:290px;box-sizing:border-box;padding:10px;border-radius:26px;display:flex;flex-direction:column;gap:2px;z-index:2}
+.pg-mp-title{padding:8px 12px 6px;font-size:12px;font-weight:600;letter-spacing:.6px;color:var(--t4)}
+.pg-mp-sep{height:1px;margin:6px 10px;background:var(--line)}
+.pg-places{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:2px;scrollbar-width:thin}
+.pg-place{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:0 12px;border:0;border-radius:16px;background:transparent;color:var(--t1);font:inherit;font-size:15px;font-weight:500;text-align:left;cursor:pointer;transition:background-color .25s ease}
+.pg-place:hover{background:rgba(255,255,255,.07)}
+.pg-light .pg-place:hover{background:rgba(11,22,38,.05)}
+.pg-place .pg-dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--t4);transition:background-color .3s ease,box-shadow .3s ease}
+.pg-place[aria-pressed="true"]{background:rgba(62,155,234,.16)}
+.pg-place[aria-pressed="true"] .pg-dot{background:#3E9BEA;box-shadow:0 0 10px #3E9BEA}
+.pg-place small{display:block;font-size:12px;font-weight:400;color:var(--t4)}
+.pg-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 12px;border:0;border-radius:16px;background:transparent;color:var(--t1);font:inherit;font-size:14.5px;font-weight:500;cursor:pointer;text-align:left}
+.pg-sw{flex:none;position:relative;width:46px;height:28px;border-radius:999px;background:var(--swoff);box-shadow:inset 0 1px 2px rgba(0,0,0,.25);transition:background-color .3s ease}
+.pg-knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.pg-switch[aria-checked="true"] .pg-sw{background:#2B8FE0}
+.pg-switch[aria-checked="true"] .pg-knob{transform:translateX(18px)}
+.pg-placecard{position:absolute;right:18px;bottom:18px;z-index:2;padding:18px;border-radius:26px;display:flex;flex-direction:column;gap:14px;max-width:min(360px,calc(100% - 36px));box-sizing:border-box;animation:pgCard .6s cubic-bezier(.2,.7,.2,1)}
+@keyframes pgCard{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.pg-placecard[hidden]{display:none}
+
+/* marcador pulsante no mapa */
+.pg-mk{width:16px;height:16px;border-radius:50%;background:#F2B14C;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.5);cursor:pointer;position:relative}
+.pg-mk.sec{width:12px;height:12px;background:#3E9BEA;border-width:2px}
+.pg-mk::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:2px solid currentColor;color:#F2B14C;animation:pgPulseMk 2.4s ease-out infinite}
+.pg-mk.sec::after{color:#7CC3F5}
+@keyframes pgPulseMk{0%{transform:scale(1);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+
+/* controles e créditos do MapLibre com acabamento de vidro */
+.maplibregl-ctrl-group{background:rgba(10,16,26,.55)!important;backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border-radius:14px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 10px 30px -12px rgba(0,0,0,.6)!important;overflow:hidden}
+.maplibregl-ctrl-group button{width:40px!important;height:40px!important}
+.maplibregl-ctrl-group button+button{border-top:1px solid rgba(255,255,255,.12)!important}
+.maplibregl-ctrl-group .maplibregl-ctrl-icon{filter:invert(1)}
+.maplibregl-ctrl-attrib{background:rgba(10,16,26,.55)!important;color:#C6D0DA!important;border-radius:10px 0 0 0}
+.maplibregl-ctrl-attrib a{color:#C6D0DA!important}
+.maplibregl-cooperative-gesture-screen{font-family:Inter,system-ui,sans-serif}
+
+/* Street View */
+.pg-sv{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+.pg-sv[hidden]{display:none}
+.pg-sv-back{position:absolute;inset:0;background:rgba(3,6,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:pgFade .4s ease}
+.pg-sv-box{position:relative;width:min(1100px,100%);padding:12px;border-radius:30px;animation:pgCard .5s cubic-bezier(.2,.7,.2,1)}
+.pg-sv-frame{border-radius:20px;overflow:hidden;height:min(70vh,620px);background:#0A1424}
+.pg-sv-frame iframe{display:block;width:100%;height:100%;border:0}
+@keyframes pgFade{from{opacity:0}to{opacity:1}}
+
+@media (max-width: 760px){
+  .pg-mappanel{left:10px;right:10px;top:10px;bottom:auto;width:auto;max-height:46%}
+  .pg-placecard{left:10px;right:10px;bottom:10px;max-width:none}
+  .pg-mapframe{height:640px}
+}
+@media (prefers-reduced-motion: reduce){.pg-mk::after,.pg-placecard,.pg-sv-box,.pg-sv-back{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="pg-root" class="pg-dark" style="background: var(--bg); color: var(--t3); transition: background-color .5s ease, color .5s ease; font-family: Inter, system-ui, sans-serif; font-size: 16px; line-height: 1.6; overflow: hidden">
+
+<!-- ================= TOPO (barra de vidro) ================= -->
+<div id="pg-prog" aria-hidden="true" style="position: fixed; left: 0; top: 0; z-index: 40; height: 2px; width: 0%; background: linear-gradient(90deg, #1E88C7, #7CC3F5); box-shadow: 0 0 12px rgba(62,155,234,0.8)"></div>
+<header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 14px 20px 0">
+<div class="lg pg-bar" style="max-width: 1200px; margin: 0 auto; border-radius: 999px; padding: 8px 8px 8px 22px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 24px">
+<span class="pg-ring" aria-hidden="true"></span>
+<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 44px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 30px; letter-spacing: -1.2px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
+<nav aria-label="Principal" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font-size: 14.5px; font-weight: 500">
+<a class="pg-nav" href="#home" style="color: var(--t3); text-decoration: none; padding: 11px 16px">Home</a>
+<a class="pg-nav" href="#servicos" style="color: var(--t3); text-decoration: none; padding: 11px 16px">Serviços</a>
+<a class="pg-nav" href="https://progeosolutions.com/quem-somos/" style="color: var(--t3); text-decoration: none; padding: 11px 16px">Quem Somos</a>
+<a class="pg-nav" href="#noticias" style="color: var(--t3); text-decoration: none; padding: 11px 16px">Notícias</a>
+</nav>
+<div style="display: flex; align-items: center; gap: 8px">
+<button id="pg-theme" class="lg lg-btn" type="button" aria-label="Ativar modo claro" title="Ativar modo claro" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; color: var(--t1); cursor: pointer">
+<svg class="pg-ico-sun" aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2"></path><path d="M12 19.5v2"></path><path d="M4.6 4.6l1.4 1.4"></path><path d="M18 18l1.4 1.4"></path><path d="M2.5 12h2"></path><path d="M19.5 12h2"></path><path d="M4.6 19.4L6 18"></path><path d="M18 6l1.4-1.4"></path></svg>
+<svg class="pg-ico-moon" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+</button>
+<a class="lg lg-tint lg-btn" href="#contato" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 14.5px; font-weight: 700">Contato<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section id="home" style="position: relative; isolation: isolate; overflow: hidden; padding-top: 74px; min-height: 1040px">
+<div aria-hidden="true" style="position: absolute; inset: 0; z-index: -2; background: radial-gradient(ellipse 60% 45% at 50% 78%, rgba(30,110,200,0.32), var(--bg0) 70%), radial-gradient(ellipse 30% 30% at 12% 20%, rgba(98,92,230,0.10), var(--bg0) 70%)"></div>
+<div id="pg-title" style="position: relative; z-index: 3; max-width: 1040px; margin: 0 auto; padding: 88px 24px 0; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 26px; text-align: center; will-change: transform, opacity">
+<div class="pg-up lg" style="animation-delay: 0.05s; display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px 8px 10px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 1.4px; color: var(--t2)"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3E9BEA; box-shadow: 0 0 10px #3E9BEA"></span>GEOTECNOLOGIA · SIG · SENSORIAMENTO REMOTO</div>
+<h1 class="pg-up" style="animation-delay: 0.15s; margin: 0; font-family: 'Inter Tight', sans-serif; font-size: clamp(44px, 6.4vw, 92px); font-weight: 600; line-height: 0.98; letter-spacing: -0.045em; color: var(--t1)">Localize o presente para <span class="pg-grad">criar o futuro</span></h1>
+<p class="pg-up" style="animation-delay: 0.3s; margin: 0; max-width: 34em; font-size: 19px; line-height: 1.6; color: var(--t4)">Promova a transformação digital do seu negócio com o poder da localização.</p>
+<div class="pg-up" style="animation-delay: 0.45s; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px">
+<a class="lg lg-tint lg-btn" href="https://progeosolutions.com/quem-somos/" style="display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 28px; border-radius: 999px; color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: 700">Sobre a Progeo<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="lg lg-btn" href="#servicos" style="display: inline-flex; align-items: center; min-height: 56px; padding: 0 26px; border-radius: 999px; color: var(--t1); text-decoration: none; font-size: 16px; font-weight: 600">O que fazemos</a>
+</div>
+</div>
+
+<!-- planeta nascendo no horizonte -->
+<div style="position: absolute; left: 50%; top: 600px; width: 1000px; height: 1000px; transform: translateX(-50%); z-index: 1; pointer-events: none">
+<div aria-hidden="true" class="pg-spin" style="position: absolute; inset: -150px; border-radius: 50%; border: 1px solid rgba(124,195,245,0.14)"><span style="position: absolute; top: 9%; left: 19%; width: 6px; height: 6px; border-radius: 50%; background: #DDF0FF; box-shadow: 0 0 14px #7CC3F5"></span></div>
+<div aria-hidden="true" class="pg-spinr" style="position: absolute; inset: -260px; border-radius: 50%; border: 1px dashed rgba(124,195,245,0.10)"><span style="position: absolute; top: 15%; right: 15%; width: 4px; height: 4px; border-radius: 50%; background: #BFE3FF; box-shadow: 0 0 10px #7CC3F5"></span></div>
+<div id="pg-orb" style="position: absolute; inset: 0; will-change: transform, opacity">
+<div aria-hidden="true" class="pg-glow" style="position: absolute; inset: 6px; border-radius: 50%; box-shadow: 0 0 90px 16px rgba(110,185,245,0.45), 0 0 260px 80px rgba(30,110,200,0.25); -webkit-mask-image: linear-gradient(180deg, #000 26%, transparent 58%); mask-image: linear-gradient(180deg, #000 26%, transparent 58%)"></div>
+<img id="pg-fallback" src="assets/globo-estatico.png" alt="" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity .6s ease">
+<canvas id="pg-globe" role="img" aria-label="A Terra em 3D nascendo no horizonte, com a América do Sul em destaque; gira conforme a página rola" style="position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .9s ease"></canvas>
+<div aria-hidden="true" style="position: absolute; inset: -1px; border-radius: 50%; border: 1.5px solid rgba(220,240,255,0.75); -webkit-mask-image: linear-gradient(180deg, #000 2%, transparent 15%); mask-image: linear-gradient(180deg, #000 2%, transparent 15%)"></div>
+<div aria-hidden="true" style="position: absolute; left: 50%; top: -4%; width: 56%; height: 22%; transform: translateX(-50%); background: radial-gradient(50% 55% at 50% 42%, rgba(220,240,255,0.5), rgba(62,155,234,0.2) 55%, transparent 78%); filter: blur(22px)"></div>
+</div>
+</div>
+<!-- cartões de vidro flutuando no horizonte -->
+<div class="lg pg-chip" style="position: absolute; z-index: 2; left: max(24px, calc(50% - 560px)); top: 700px; padding: 14px 18px; border-radius: 22px; display: flex; flex-direction: column; gap: 2px; min-width: 180px">
+<span style="font-size: 12.5px; color: var(--t4)">Sede</span>
+<span style="font-family: 'Inter Tight', sans-serif; font-size: 20px; font-weight: 600; color: var(--t1)">Maricá, RJ</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--t3)">22°55′ S · 42°49′ O</span>
+</div>
+<div class="lg pg-chip" style="animation-delay: -3s; position: absolute; z-index: 2; right: max(24px, calc(50% - 560px)); top: 650px; padding: 16px 18px; border-radius: 24px; display: flex; align-items: center; gap: 14px">
+<span class="lg" style="width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8CC8F2" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4.5-9 4.5-9-4.5z"></path><path d="M3 12l9 4.5 9-4.5"></path><path d="M3 16.5L12 21l9-4.5"></path></svg></span>
+<span style="display: flex; flex-direction: column; text-align: left"><span style="font-weight: 600; color: var(--t1)">SIG · Sensoriamento remoto</span><span style="font-size: 13px; color: var(--t4)">Dados geoespaciais para decidir</span></span>
+</div>
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 160px; z-index: 2; background: linear-gradient(180deg, var(--bg0), var(--bg))"></div>
+</section>
+
+<!-- ================= MAPA DE SATÉLITE (ao vivo) ================= -->
+<section id="mapa" style="max-width: 1240px; margin: 0 auto; padding: 72px 28px 120px; box-sizing: border-box">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px 48px; margin-bottom: 40px">
+<h2 data-rv="" style="margin: 0; max-width: 14ch; font-family: 'Inter Tight', sans-serif; font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; color: var(--t1)">Dado geográfico vira decisão</h2>
+<p data-rv="" style="margin: 0; max-width: 28em; font-size: 17px; color: var(--t4)">Imagem de satélite e relevo em 3D, direto no navegador. Escolha um local para voar até ele e abrir o Street View.</p>
+</div>
+
+<div class="pg-mapframe">
+<div id="pg-map" role="region" aria-label="Mapa de satélite interativo"></div>
+
+<!-- painel de locais e camadas -->
+<div class="lg pg-mappanel">
+<div class="pg-mp-title">LOCAIS</div>
+<div id="pg-places" class="pg-places" role="list"></div>
+<div class="pg-mp-sep"></div>
+<div class="pg-mp-title">CAMADAS</div>
+<button class="pg-row pg-switch" type="button" role="switch" aria-checked="true" data-layer="ref">Nomes e limites<span class="pg-sw"><span class="pg-knob"></span></span></button>
+<button class="pg-row pg-switch" type="button" role="switch" aria-checked="true" data-layer="terrain">Relevo 3D<span class="pg-sw"><span class="pg-knob"></span></span></button>
+<button class="pg-row pg-switch" type="button" role="switch" aria-checked="true" data-layer="orbit">Câmera girando<span class="pg-sw"><span class="pg-knob"></span></span></button>
+</div>
+
+<!-- cartão do local escolhido -->
+<div id="pg-placecard" class="lg pg-placecard" hidden>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span id="pg-pc-kicker" style="font-size: 12.5px; color: var(--t4)"></span>
+<span id="pg-pc-name" style="font-family: 'Inter Tight', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)"></span>
+<span id="pg-pc-coord" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--t3)"></span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button id="pg-sv-open" class="lg lg-tint lg-btn" type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border: 0; border-radius: 999px; color: #FFFFFF; font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"></circle><path d="M12 8v6"></path><path d="M9 21l3-7 3 7"></path><path d="M4 17c0 2 3.6 3.5 8 3.5s8-1.5 8-3.5"></path></svg>Street View</button>
+<a id="pg-gmaps" class="lg lg-btn" href="#" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 18px; border-radius: 999px; color: var(--t1); text-decoration: none; font-size: 14.5px; font-weight: 600">Abrir no Google Maps</a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Street View (janela de vidro) -->
+<div id="pg-sv" class="pg-sv" hidden>
+<div class="pg-sv-back" data-close="1"></div>
+<div class="lg pg-sv-box" role="dialog" aria-modal="true" aria-labelledby="pg-sv-title">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 12px 10px">
+<span id="pg-sv-title" style="font-family: 'Inter Tight', sans-serif; font-size: 19px; font-weight: 600; color: var(--t1)">Street View</span>
+<button class="lg lg-btn" type="button" data-close="1" aria-label="Fechar Street View" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; color: var(--t1); cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg></button>
+</div>
+<div class="pg-sv-frame"><iframe id="pg-sv-iframe" title="Street View" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+</div>
+</div>
+
+<!-- ================= SERVIÇOS (vidro sobre fundo colorido) ================= -->
+<section id="servicos" class="pg-bg" style="position: relative">
+<div style="background: linear-gradient(180deg, var(--bg) 0%, var(--veil1) 22%, var(--veil1) 78%, var(--bg) 100%)">
+<div style="max-width: 1240px; margin: 0 auto; padding: 140px 28px; box-sizing: border-box">
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 640px; margin-bottom: 52px">
+<span style="font-size: 14px; font-weight: 600; color: var(--acc)">Serviços profissionais</span>
+<h2 data-rv="" style="margin: 0; font-family: 'Inter Tight', sans-serif; font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; color: var(--t1)">O que fazemos</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px">
+<article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 290px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7l-5 5 5 5"></path><path d="M16 7l5 5-5 5"></path></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">01</span></div>
+<h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">Desenvolvimento</h3>
+<p style="margin: 0; font-size: 15px; color: var(--t3)">Sistemas, aplicações WebGIS e painéis geoespaciais sob medida.</p>
+</article>
+<article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 290px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H6a4 4 0 0 0 0 8h3"></path><path d="M15 7h3a4 4 0 0 1 0 8h-3"></path><path d="M8 11h8"></path></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">02</span></div>
+<h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">Integração</h3>
+<p style="margin: 0; font-size: 15px; color: var(--t3)">Bases cartográficas e dados geoespaciais conectados aos sistemas que você já usa.</p>
+</article>
+<article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 290px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">03</span></div>
+<h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">Diagnóstico</h3>
+<p style="margin: 0; font-size: 15px; color: var(--t3)">Análise territorial e leitura dos seus dados para orientar prioridades.</p>
+</article>
+<article data-rv="" class="lg lg-card" style="padding: 28px 26px; border-radius: 30px; display: flex; flex-direction: column; gap: 16px; min-height: 290px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span class="lg" style="width: 52px; height: 52px; border-radius: 18px; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 16 0"></path><rect x="2.5" y="13" width="4" height="6" rx="1.5"></rect><rect x="17.5" y="13" width="4" height="6" rx="1.5"></rect></svg></span><span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t4)">04</span></div>
+<h3 style="margin: auto 0 0; font-family: 'Inter Tight', sans-serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--t1)">Suporte</h3>
+<p style="margin: 0; font-size: 15px; color: var(--t3)">Acompanhamento contínuo de sistemas e bases geográficas.</p>
+</article>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ================= ATUAÇÃO ================= -->
+<section id="atuacao" style="max-width: 1240px; margin: 0 auto; padding: 120px 28px; box-sizing: border-box">
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 640px; margin-bottom: 48px">
+<span style="font-size: 14px; font-weight: 600; color: var(--acc)">Atuação</span>
+<h2 data-rv="" style="margin: 0; font-family: 'Inter Tight', sans-serif; font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; color: var(--t1)">Clientes e projetos</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px">
+<a data-rv="" class="lg-card" href="#" style="position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 30px; overflow: hidden; background: var(--ph); text-decoration: none">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--t5)">[FOTO DO PROJETO IGARAPÉ]</div>
+<div class="lg" style="position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 14px 16px 14px 20px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px"><span style="font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; color: var(--t1)">Igarapé</span><span class="lg" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M8 7h9v9"></path></svg></span></div></a>
+<a data-rv="" class="lg-card" href="#" style="position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 30px; overflow: hidden; background: var(--ph); text-decoration: none">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--t5)">[FOTO DO PROJETO MARICÁ]</div>
+<div class="lg" style="position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 14px 16px 14px 20px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px"><span style="font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; color: var(--t1)">Maricá</span><span class="lg" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M8 7h9v9"></path></svg></span></div></a>
+<a data-rv="" class="lg-card" href="#" style="position: relative; display: block; aspect-ratio: 4 / 5; border-radius: 30px; overflow: hidden; background: var(--ph); text-decoration: none">
+<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--t5)">[FOTO DO PROJETO DARCY]</div>
+<div class="lg" style="position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 14px 16px 14px 20px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px"><span style="font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 600; color: var(--t1)">Darcy</span><span class="lg" style="width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" style="stroke: var(--t1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"></path><path d="M8 7h9v9"></path></svg></span></div></a>
+</div>
+</section>
+
+<!-- ================= NOTÍCIAS ================= -->
+<section id="noticias" style="max-width: 1240px; margin: 0 auto; padding: 40px 28px 120px; box-sizing: border-box">
+<div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 40px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 14px; font-weight: 600; color: var(--acc)">Últimas novidades</span>
+<h2 data-rv="" style="margin: 0; font-family: 'Inter Tight', sans-serif; font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; color: var(--t1)">Fique por dentro</h2>
+</div>
+<a class="lg lg-btn" href="https://progeosolutions.com/noticias/" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; color: var(--t1); text-decoration: none; font-size: 15px; font-weight: 600">Todas as notícias<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+<div style="display: flex; flex-direction: column; border-top: 1px solid var(--line)">
+<a data-rv="" class="pg-row" href="#" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 8px 32px; align-items: center; padding: 28px 16px; border-bottom: 1px solid var(--line); text-decoration: none; border-radius: 0"><time datetime="2023-12-06" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t5)">06 dez 2023</time><span style="font-family: 'Inter Tight', sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -0.01em; color: var(--t1)">Desenvolvimento de Sistemas: agilidade no seu processo</span><span style="justify-self: end; font-weight: 600; color: var(--acc)">Ler mais →</span></a>
+<a data-rv="" class="pg-row" href="#" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 8px 32px; align-items: center; padding: 28px 16px; border-bottom: 1px solid var(--line); text-decoration: none"><time datetime="2023-12-04" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t5)">04 dez 2023</time><span style="font-family: 'Inter Tight', sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -0.01em; color: var(--t1)">GIS: tecnologia de mãos dadas com a ciência</span><span style="justify-self: end; font-weight: 600; color: var(--acc)">Ler mais →</span></a>
+<a data-rv="" class="pg-row" href="#" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 8px 32px; align-items: center; padding: 28px 16px; border-bottom: 1px solid var(--line); text-decoration: none"><time datetime="2023-12-03" style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--t5)">03 dez 2023</time><span style="font-family: 'Inter Tight', sans-serif; font-size: 23px; font-weight: 600; letter-spacing: -0.01em; color: var(--t1)">Geotecnologia e seus avanços</span><span style="justify-self: end; font-weight: 600; color: var(--acc)">Ler mais →</span></a>
+</div>
+</section>
+
+<!-- ================= CONTATO ================= -->
+<section id="contato" class="pg-bg" style="position: relative">
+<div style="background: linear-gradient(180deg, var(--bg) 0%, var(--veil1) 30%, var(--veil2) 100%)">
+<div style="max-width: 1240px; margin: 0 auto; padding: 140px 28px 120px; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 48px; align-items: center">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<span style="font-size: 14px; font-weight: 600; color: var(--acc)">Entre em contato</span>
+<h2 data-rv="" style="margin: 0; font-family: 'Inter Tight', sans-serif; font-size: clamp(36px, 4.4vw, 60px); font-weight: 600; line-height: 1.02; letter-spacing: -0.035em; color: var(--t1)">Vamos conversar sobre o seu território</h2>
+<address data-rv="" style="margin-top: 8px; font-style: normal; font-size: 16px; color: var(--t2)">Av. Roberto Silveira, 242, 5º andar<br>Centro, Maricá – RJ</address>
+</div>
+<form data-rv="" class="lg" style="display: flex; flex-direction: column; gap: 16px; padding: 30px; border-radius: 34px">
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--t2)">Nome<input class="pg-in" type="text" name="nome" autocomplete="name" style="min-height: 52px; padding: 0 18px; border-radius: 16px; border: 1px solid var(--line2); background: var(--field); color: var(--t1); font: inherit; font-size: 15.5px"></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--t2)">E-mail<input class="pg-in" type="email" name="email" autocomplete="email" style="min-height: 52px; padding: 0 18px; border-radius: 16px; border: 1px solid var(--line2); background: var(--field); color: var(--t1); font: inherit; font-size: 15.5px"></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--t2)">Mensagem<textarea class="pg-in" name="mensagem" rows="4" style="padding: 14px 18px; border-radius: 16px; border: 1px solid var(--line2); background: var(--field); color: var(--t1); font: inherit; font-size: 15.5px; resize: vertical"></textarea></label>
+<button class="lg lg-tint lg-btn" type="button" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; border: 0; border-radius: 999px; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer">Enviar<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></button>
+</form>
+</div>
+
+<!-- RODAPÉ -->
+<footer style="max-width: 1240px; margin: 0 auto; padding: 0 28px 28px; box-sizing: border-box">
+<div class="lg" style="border-radius: 28px; padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 32px; font-size: 14px; color: var(--t2)">
+<span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: -1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="13.4" height="13.4" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span>
+<span>Av. Roberto Silveira, 242, 5º andar · Centro · Maricá – RJ</span>
+<nav aria-label="Redes sociais" style="display: flex; align-items: center; gap: 8px">
+<a class="lg lg-btn" href="#" aria-label="LinkedIn" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; color: var(--t1)"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 10v7"></path><path d="M8 7v.01"></path><path d="M12 17v-4a2.5 2.5 0 0 1 5 0v4"></path><path d="M12 10v7"></path></svg></a>
+<a class="lg lg-btn" href="#" aria-label="Instagram" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; color: var(--t1)"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><path d="M17.5 6.5v.01"></path></svg></a>
+<a class="lg lg-btn" href="#" aria-label="Facebook" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; color: var(--t1)"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h-2.5A3.5 3.5 0 0 0 9 6.5V10H6.5v3.5H9V21h3.5v-7.5H15l.5-3.5h-3V7a1 1 0 0 1 1-1H15z"></path></svg></a>
+</nav>
+</div>
+</footer>
+</div>
+</section>
+
+</div>
+<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>
