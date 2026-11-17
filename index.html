@@ -63,14 +63,11 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 .pg-grad{display:inline-block;padding:0 .12em .08em 0;margin:0 -.12em -.08em 0;background:linear-gradient(90deg,#7CC3F5,#FFFFFF 40%,#7CC3F5 60%,#3E9BEA);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:pgShine 6s linear infinite}
 .pg-light .pg-grad{background-image:linear-gradient(90deg,#16649F,#1E88C7 40%,#0B1626 60%,#16649F)}
 .pg-hdr{transition:padding .4s ease}
-.pg-bar{transition:max-width .55s cubic-bezier(.2,.7,.2,1),padding .4s ease}
 .pg-ring{position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:conic-gradient(from var(--ang),transparent 0%,rgba(124,195,245,.75) 12%,rgba(225,242,255,.95) 20%,transparent 34%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0;transition:opacity .5s ease;animation:pgSpinB 4s linear infinite}
 .pg-hdr.compact{padding-top:10px}
-.pg-hdr.compact .pg-bar{max-width:940px!important}
 .pg-hdr.compact .pg-ring{opacity:1}
 .pg-hdr.dock{top:auto!important;bottom:18px;padding-top:0;animation:pgDock .55s cubic-bezier(.2,.7,.2,1)}
-.pg-hdr.dock .pg-bar{max-width:780px!important}
-.pg-hdr.dock .pg-bar{transition:max-width .55s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1),opacity .35s ease}
+.pg-hdr.dock .pg-bar{transition:max-width .55s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1),opacity .35s ease,background-color .4s ease,border-color .4s ease}
 .pg-hdr.dock.away{pointer-events:none}
 .pg-hdr.dock.away .pg-bar{transform:translateY(140%);opacity:0}
 [data-rv]{opacity:0;transform:translateY(38px) scale(.985);filter:blur(5px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1.05s cubic-bezier(.16,.84,.24,1),filter .9s ease}
@@ -87,20 +84,33 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 @media (max-width: 900px){nav[aria-label="Principal"]{display:none!important}}
 
-/* ---------- menu mais leve ---------- */
-.pg-bar{background:linear-gradient(150deg,rgba(255,255,255,.07),rgba(255,255,255,.025) 45%,rgba(255,255,255,.04))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 18px 50px -28px rgba(0,0,0,.7)!important;-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
-.pg-bar::before{background:linear-gradient(140deg,rgba(255,255,255,.35),rgba(255,255,255,.04) 30%,rgba(255,255,255,0) 60%,rgba(255,255,255,.14))!important}
-.pg-bar::after{opacity:.5}
-.pg-light .pg-bar{background:linear-gradient(150deg,rgba(255,255,255,.72),rgba(255,255,255,.5))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 16px 40px -26px rgba(20,50,90,.35)!important}
-.pg-menu{display:flex;align-items:center;gap:0;font-size:14px;font-weight:450;letter-spacing:.005em}
-.pg-menu .pg-nav{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;color:var(--t4);text-decoration:none}
-.pg-menu .pg-nav:hover{color:var(--t1)!important}
+/* ---------- menu no estilo "pílula" ---------- */
+.pg-bar{position:relative;max-width:1240px;margin:0 auto;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px 6px 6px 8px;border-radius:999px;border:1px solid transparent;background:transparent;transition:max-width .55s cubic-bezier(.2,.7,.2,1),background-color .4s ease,border-color .4s ease,box-shadow .4s ease,padding .4s ease}
+.pg-menu{display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);font-size:13.5px;font-weight:450}
+.pg-menu .pg-nav{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;color:var(--t4);text-decoration:none;transition:color .2s ease,background-color .2s ease}
+.pg-menu .pg-nav:hover{color:var(--t1)!important;background:rgba(255,255,255,.06)}
+.pg-actions{display:flex;align-items:center;gap:8px}
 .pg-icobtn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--t4);cursor:pointer;transition:background-color .25s ease,color .25s ease}
-.pg-icobtn:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.pg-icobtn:hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.pg-btn-ghost,.pg-btn-solid{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .25s cubic-bezier(.2,.7,.2,1),background-color .25s ease,border-color .25s ease,box-shadow .25s ease}
+.pg-btn-ghost{color:var(--t1);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.14)}
+.pg-btn-ghost:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.07);color:var(--t1)}
+.pg-btn-solid{color:#0B1626;background:#EAF3FC;border:1px solid #EAF3FC;box-shadow:0 8px 24px -12px rgba(124,195,245,.6)}
+.pg-btn-solid:hover{color:#0B1626;background:#FFFFFF;transform:translateY(-1px);box-shadow:0 12px 30px -12px rgba(124,195,245,.8)}
+/* ao rolar, a barra vira uma pílula de vidro */
+.pg-hdr.compact .pg-bar,.pg-hdr.dock .pg-bar{max-width:980px;padding:5px 5px 5px 16px;background:rgba(10,16,28,.72);border-color:rgba(124,195,245,.16);box-shadow:0 16px 44px rgba(2,6,14,.55),inset 0 1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%)}
+.pg-hdr.compact .pg-menu,.pg-hdr.dock .pg-menu{background:transparent;border-color:transparent}
+.pg-hdr.dock .pg-bar{max-width:880px}
+/* modo claro */
+.pg-light .pg-menu{background:rgba(11,22,38,.035);border-color:rgba(11,22,38,.1)}
+.pg-light .pg-menu .pg-nav:hover{background:rgba(11,22,38,.05)}
 .pg-light .pg-icobtn:hover{background:rgba(11,22,38,.06)}
-.pg-access{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px 0 18px;border-radius:999px;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
-.pg-hdr.compact .pg-bar{max-width:900px!important}
-.pg-hdr.dock .pg-bar{max-width:760px!important}
+.pg-light .pg-btn-ghost{background:rgba(255,255,255,.6);border-color:rgba(11,22,38,.14)}
+.pg-light .pg-btn-ghost:hover{background:#FFFFFF;border-color:rgba(11,22,38,.28)}
+.pg-light .pg-btn-solid{color:#FFFFFF;background:#0B1626;border-color:#0B1626;box-shadow:0 8px 24px -12px rgba(11,22,38,.5)}
+.pg-light .pg-btn-solid:hover{color:#FFFFFF;background:#1A2B42}
+.pg-light .pg-hdr.compact .pg-bar,.pg-light .pg-hdr.dock .pg-bar{background:rgba(255,255,255,.78);border-color:rgba(11,22,38,.1);box-shadow:0 16px 40px -20px rgba(20,50,90,.35),inset 0 1px 0 #fff}
+@media (max-width: 760px){.pg-btn-ghost{display:none}.pg-bar{gap:8px}}
 /* ---------- ícone do botão de tema ---------- */
 .pg-dark .pg-ico-moon{display:none}.pg-light .pg-ico-sun{display:none}
 
@@ -172,10 +182,10 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 <!-- ================= TOPO (barra de vidro) ================= -->
 <div id="pg-prog" aria-hidden="true" style="position: fixed; left: 0; top: 0; z-index: 40; height: 2px; width: 0%; background: linear-gradient(90deg, #1E88C7, #7CC3F5); box-shadow: 0 0 12px rgba(62,155,234,0.8)"></div>
-<header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 16px 20px 0">
-<div class="lg pg-bar" style="max-width: 1040px; margin: 0 auto; border-radius: 999px; padding: 4px 4px 4px 14px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 14px 24px 0">
+<div class="pg-bar">
 <span class="pg-ring" aria-hidden="true"></span>
-<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 40px; padding: 0 6px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 25px; letter-spacing: -1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="13.4" height="13.4" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
+<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 40px; padding: 0 6px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: -1.1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="14.5" height="14.5" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
 <nav aria-label="Principal" class="pg-menu">
 <a class="pg-nav" href="#solucoes">Soluções</a>
 <a class="pg-nav" href="#funcionalidades">Funcionalidades</a>
@@ -183,12 +193,13 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 <a class="pg-nav" href="#seguranca-info">Segurança</a>
 <a class="pg-nav" href="#contato">Contato</a>
 </nav>
-<div style="display: flex; align-items: center; gap: 4px">
+<div class="pg-actions">
 <button id="pg-theme" class="pg-icobtn" type="button" aria-label="Ativar modo claro" title="Ativar modo claro">
 <svg class="pg-ico-sun" aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v2"></path><path d="M12 19.5v2"></path><path d="M4.6 4.6l1.4 1.4"></path><path d="M18 18l1.4 1.4"></path><path d="M2.5 12h2"></path><path d="M19.5 12h2"></path><path d="M4.6 19.4L6 18"></path><path d="M18 6l1.4-1.4"></path></svg>
 <svg class="pg-ico-moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
 </button>
-<a class="lg lg-tint lg-btn pg-access" href="https://progeosolutions.com/CentralPGR/login.php">Acessar o Nexus<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="pg-btn-ghost" href="https://progeosolutions.com/CentralPGR/login.php">Entrar no Nexus</a>
+<a class="pg-btn-solid" href="#contato">Agendar demonstração</a>
 </div>
 </div>
 </header>
@@ -408,6 +419,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 </div>
 <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-<script src="assets/site.js?v=8"></script>
+<script src="assets/site.js?v=9"></script>
 </body>
 </html>
