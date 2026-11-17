@@ -186,18 +186,22 @@
     var style = {
       version: 8,
       sources: {
+        satlow: { type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 9 },
         sat: { type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 19, attribution: 'Imagens: Esri, Maxar, Earthstar Geographics e comunidade GIS' },
         ref: { type: 'raster', tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'], tileSize: 256, maxzoom: 19 },
         dem: { type: 'raster-dem', tiles: ['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'], encoding: 'terrarium', tileSize: 256, maxzoom: 14, attribution: 'Relevo: Terrain Tiles (AWS / Mapzen)' }
       },
       layers: [
-        { id: 'sat', type: 'raster', source: 'sat', paint: { 'raster-fade-duration': 250 } },
+        { id: 'bg', type: 'background', paint: { 'background-color': '#1B2A22' } },
+        { id: 'satlow', type: 'raster', source: 'satlow', paint: { 'raster-fade-duration': 0 } },
+        { id: 'sat', type: 'raster', source: 'sat', paint: { 'raster-fade-duration': 300 } },
         { id: 'ref', type: 'raster', source: 'ref', paint: { 'raster-opacity': 0.9 } }
       ]
     };
     var map = new mgl.Map({
       container: 'pg-map', style: style,
       center: [-50, -14], zoom: 2.7, pitch: 0, bearing: 0, maxPitch: 75,
+      maxTileCacheSize: 2000, fadeDuration: 200, refreshExpiredTiles: false,
       attributionControl: { compact: true },
       cooperativeGestures: true,
       locale: {
@@ -213,7 +217,7 @@
     map.on('style.load', function () {
       try { map.setProjection({ type: 'globe' }); } catch (e) {}
       try { map.setSky({ 'sky-color': '#0B1E3A', 'horizon-color': '#7CC3F5', 'fog-color': '#BFD9F2', 'sky-horizon-blend': 0.6, 'horizon-fog-blend': 0.6, 'fog-ground-blend': 0.4, 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 7, 1, 10, 0] }); } catch (e) {}
-      try { map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {}
+      // o relevo 3D só entra depois que a câmera chega ao local (evita "paredes" durante o voo)
     });
 
     // marcadores
@@ -232,24 +236,76 @@
       b.type = 'button'; b.className = 'pg-place'; b.setAttribute('role', 'listitem'); b.setAttribute('aria-pressed', 'false');
       b.innerHTML = '<span class="pg-dot"></span><span>' + p.name + '<small>' + p.kicker + '</small></span>';
       b.addEventListener('click', function () { fly(i); });
+      b.addEventListener('mouseenter', function () { warm(p); });
+      b.addEventListener('focus', function () { warm(p); });
       list.appendChild(b);
     });
 
+
+    // baixa antes as imagens (satélite, nomes e relevo) em volta do destino, em vários níveis de zoom
+    var warmed = {};
+    function tileXY(lng, lat, z) {
+      var n = Math.pow(2, z), x = Math.floor((lng + 180) / 360 * n);
+      var r = lat * Math.PI / 180, y = Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n);
+      return [x, y];
+    }
+    function warm(p) {
+      if (warmed[p.name]) return Promise.resolve(); 
+      var urls = [], zmax = Math.min(18, Math.ceil(p.zoom + 0.5));
+      for (var z = Math.max(5, zmax - 5); z <= zmax; z++) {
+        var c = tileXY(p.lng, p.lat, z), R = z >= zmax - 1 ? 3 : 2;
+        for (var dx = -R; dx <= R; dx++) for (var dy = -R; dy <= R; dy++) {
+          var x = c[0] + dx, y = c[1] + dy;
+          urls.push('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/' + z + '/' + y + '/' + x);
+          if (z >= zmax - 2) urls.push('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/' + z + '/' + y + '/' + x);
+          if (z <= 14 && z >= zmax - 3) urls.push('https://s3.amazonaws.com/elevation-tiles-prod/terrarium/' + z + '/' + x + '/' + y + '.png');
+        }
+      }
+      warmed[p.name] = true;
+      return Promise.all(urls.map(function (u) { return new Promise(function (ok) { var im = new Image(); im.crossOrigin = 'anonymous'; im.onload = im.onerror = ok; im.src = u; }); }));
+    }
+    function withTimeout(pr, ms) { return Promise.race([pr, new Promise(function (ok) { setTimeout(ok, ms); })]); }
+    function terrainRamp(my) {
+      if (!terrainOn || my !== token) return;
+      var t0 = performance.now(), D = 1600;
+      try { map.setTerrain({ source: 'dem', exaggeration: 0.001 }); } catch (e) { return; }
+      (function step() {
+        if (my !== token) return;
+        var k = Math.min(1, (performance.now() - t0) / D), e = 1 - Math.pow(1 - k, 3);
+        try { map.setTerrain({ source: 'dem', exaggeration: Math.max(0.001, 1.35 * e) }); } catch (er) { return; }
+        if (k < 1) requestAnimationFrame(step);
+      })();
+    }
     var token = 0; // cada voo/interação gera um novo "token"; animações antigas param sozinhas
     function fly(i) {
       var p = PLACES[i]; current = p;
       token++; var my = token;
       [].forEach.call(list.children, function (c, k) { c.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
       map.stop();
-      var bearing = (Math.random() * 120) - 60;
-      // voo longo e suave: sobe, atravessa e mergulha inclinado sobre o local
-      map.flyTo({ center: [p.lng, p.lat], zoom: p.zoom, pitch: 64, bearing: bearing, speed: 0.55, curve: 1.7, essential: true });
-      map.once('moveend', function () { if (my === token) setTimeout(function () { startOrbit(my); }, 400); });
+      try { map.setTerrain(null); } catch (e) {}
       $('pg-pc-kicker').textContent = p.kicker;
       $('pg-pc-name').textContent = p.name;
       $('pg-pc-coord').textContent = fmt(p.lat, 'N', 'S') + ' · ' + fmt(p.lng, 'L', 'O');
       $('pg-gmaps').href = 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + p.lat + ',' + p.lng;
       var card = $('pg-placecard'); card.hidden = true; void card.offsetWidth; card.hidden = false;
+      var bearing = (Math.random() * 90) - 45;
+      // espera até 1,2 s pelas imagens do destino (normalmente bem menos) e então voa
+      withTimeout(warm(p), 1200).then(function () {
+        if (my !== token) return;
+        // 1º: voo amplo, quase de cima, até perto do local
+        map.flyTo({ center: [p.lng, p.lat], zoom: p.zoom - 1.2, pitch: 30, bearing: bearing * 0.5, speed: 0.7, curve: 1.6, essential: true });
+        map.once('moveend', function () {
+          if (my !== token) return;
+          // 2º: quando o local já está carregado, mergulha inclinando a câmera e liga o relevo 3D
+          var go = function () {
+            if (my !== token) return;
+            terrainRamp(my);
+            map.easeTo({ zoom: p.zoom, pitch: 64, bearing: bearing, duration: 2600, easing: function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, essential: true });
+            map.once('moveend', function () { if (my === token) setTimeout(function () { startOrbit(my); }, 300); });
+          };
+          if (map.areTilesLoaded()) go(); else { var done = false; var f = function () { if (!done) { done = true; go(); } }; map.once('idle', f); setTimeout(f, 1500); }
+        });
+      });
     }
 
     // câmera girando devagar ao redor do local depois do voo
@@ -258,7 +314,7 @@
       map.easeTo({ bearing: map.getBearing() + 30, duration: 12000, easing: function (t) { return t; }, essential: true });
       map.once('moveend', function () { if (my === token) startOrbit(my); });
     }
-    function interrupt() { token++; }
+    function interrupt() { token++; try { if (terrainOn && map.getTerrain && map.getTerrain()) map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {} }
     map.on('movestart', function (e) { if (e && e.originalEvent) interrupt(); });
     ['mousedown', 'touchstart', 'wheel'].forEach(function (ev) { map.getCanvas().addEventListener(ev, interrupt, { passive: true }); });
     map.getContainer().addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.maplibregl-ctrl')) interrupt(); }, true);
@@ -270,7 +326,7 @@
         sw.setAttribute('aria-checked', on ? 'true' : 'false');
         var k = sw.getAttribute('data-layer');
         if (k === 'ref') map.setLayoutProperty('ref', 'visibility', on ? 'visible' : 'none');
-        if (k === 'terrain') { terrainOn = on; try { map.setTerrain(on ? { source: 'dem', exaggeration: 1.35 } : null); } catch (e) {} }
+        if (k === 'terrain') { terrainOn = on; if (on) terrainRamp(token); else { try { map.setTerrain(null); } catch (e) {} } }
         if (k === 'orbit') { orbitOn = on; token++; if (on) startOrbit(token); else map.stop(); }
       });
     });
