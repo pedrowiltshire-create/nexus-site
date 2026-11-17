@@ -197,6 +197,8 @@
         { id: 'ref', type: 'raster', source: 'ref', paint: { 'raster-opacity': 0.9 } }
       ]
     };
+    var SKY = { 'sky-color': '#0B1E3A', 'horizon-color': '#7CC3F5', 'fog-color': '#BFD9F2', 'sky-horizon-blend': 0.6, 'horizon-fog-blend': 0.6, 'fog-ground-blend': 0.4, 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 7, 1, 10, 0] };
+    function applySky() { try { map.setSky(SKY); } catch (e) {} }
     var map = new mgl.Map({
       container: 'pg-map', style: style,
       center: [-50, -14], zoom: 2.7, pitch: 0, bearing: 0, maxPitch: 75,
@@ -209,14 +211,14 @@
         'CooperativeGesturesHandler.MobileHelpText': 'Use dois dedos para mover o mapa'
       }
     });
-    window.__nexusMap = map; // diagnóstico
+    window.__nexusMap = map; // diagnóstico (remover no final)
     map.addControl(new mgl.NavigationControl({ visualizePitch: true }), 'top-right');
     map.addControl(new mgl.FullscreenControl(), 'top-right');
     var terrainOn = true, orbitOn = !reduce, current = null;
 
     map.on('style.load', function () {
       try { map.setProjection({ type: 'globe' }); } catch (e) {}
-      try { map.setSky({ 'sky-color': '#0B1E3A', 'horizon-color': '#7CC3F5', 'fog-color': '#BFD9F2', 'sky-horizon-blend': 0.6, 'horizon-fog-blend': 0.6, 'fog-ground-blend': 0.4, 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 7, 1, 10, 0] }); } catch (e) {}
+      applySky();
       // o relevo 3D só entra depois que a câmera chega ao local (evita "paredes" durante o voo)
     });
 
@@ -265,7 +267,11 @@
       return Promise.all(urls.map(function (u) { return new Promise(function (ok) { var im = new Image(); im.crossOrigin = 'anonymous'; im.onload = im.onerror = ok; im.src = u; }); }));
     }
     function withTimeout(pr, ms) { return Promise.race([pr, new Promise(function (ok) { setTimeout(ok, ms); })]); }
-    function terrainOnNow() { if (!terrainOn) return; try { if (!map.getTerrain || !map.getTerrain()) map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {} }
+    // religar o relevo às vezes deixa o mapa em branco; reaplicar o céu logo depois resolve
+    function terrainOnNow() {
+      if (!terrainOn) return;
+      try { if (!map.getTerrain || !map.getTerrain()) { map.setTerrain({ source: 'dem', exaggeration: 1.35 }); applySky(); map.triggerRepaint(); } } catch (e) {}
+    }
     var token = 0; // cada voo/interação gera um novo "token"; animações antigas param sozinhas
     function fly(i) {
       var p = PLACES[i]; current = p;
