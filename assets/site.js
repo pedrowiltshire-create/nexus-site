@@ -164,7 +164,7 @@
   var GOOGLE_MAPS_KEY = '';
 
   var PLACES = [
-    { name: 'Maricá', kicker: 'Sede · Rio de Janeiro', lat: -22.9187, lng: -42.8186, zoom: 14.2, main: true },
+    { name: 'Maricá', kicker: 'Exemplo · Maricá, RJ', lat: -22.9187, lng: -42.8186, zoom: 14.2, main: true },
     { name: 'Rio de Janeiro', kicker: 'Praia de Copacabana', lat: -22.9711, lng: -43.1822, zoom: 15.2 },
     { name: 'São Paulo', kicker: 'Avenida Paulista', lat: -23.5614, lng: -46.6559, zoom: 15.4 },
     { name: 'Brasília', kicker: 'Esplanada dos Ministérios', lat: -15.7997, lng: -47.8645, zoom: 14.8 },
