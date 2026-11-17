@@ -111,6 +111,12 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 .pg-light .pg-btn-solid:hover{color:#FFFFFF;background:#1A2B42}
 .pg-light .pg-hdr.compact .pg-bar,.pg-light .pg-hdr.dock .pg-bar{background:rgba(255,255,255,.78);border-color:rgba(11,22,38,.1);box-shadow:0 16px 40px -20px rgba(20,50,90,.35),inset 0 1px 0 #fff}
 @media (max-width: 760px){.pg-btn-ghost{display:none}.pg-bar{gap:8px}}
+
+/* brilho sutil no logo do menu */
+@keyframes pgLogoGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(62,155,234,.28)) drop-shadow(0 0 18px rgba(62,155,234,.10))}50%{filter:drop-shadow(0 0 9px rgba(110,185,245,.45)) drop-shadow(0 0 26px rgba(62,155,234,.20))}}
+.pg-logo-glow{animation:pgLogoGlow 5s ease-in-out infinite}
+.pg-light .pg-logo-glow{animation:none;filter:drop-shadow(0 0 8px rgba(30,136,199,.22))}
+@media (prefers-reduced-motion: reduce){.pg-logo-glow{animation:none;filter:drop-shadow(0 0 7px rgba(62,155,234,.32))}}
 /* ---------- ícone do botão de tema ---------- */
 .pg-dark .pg-ico-moon{display:none}.pg-light .pg-ico-sun{display:none}
 
@@ -185,7 +191,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 <header id="pg-header" class="pg-hdr" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; padding: 14px 24px 0">
 <div class="pg-bar">
 <span class="pg-ring" aria-hidden="true"></span>
-<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 40px; padding: 0 6px; text-decoration: none"><span role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: -1.1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="14.5" height="14.5" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
+<a href="#home" aria-label="Nexus, início" style="display: flex; align-items: center; min-height: 40px; padding: 0 6px; text-decoration: none"><span class="pg-logo-glow" role="img" aria-label="Nexus" style="display: inline-flex; align-items: baseline; font-family: Geist, 'Inter Tight', sans-serif; font-weight: 600; font-size: 27px; letter-spacing: -1.1px; line-height: 1; color: var(--t1)"><span>ne</span><svg aria-hidden="true" width="14.5" height="14.5" viewBox="0 0 90 90" style="margin: 0 0.4px"><polygon points="0,0 24,0 90,90 66,90" fill="#1E88C7"></polygon><polygon points="66,0 90,0 60,40.91 48,24.55" fill="#1E88C7"></polygon><polygon points="30,49.09 42,65.45 24,90 0,90" fill="#1E88C7"></polygon></svg><span>us</span></span></a>
 <nav aria-label="Principal" class="pg-menu">
 <a class="pg-nav" href="#solucoes">Soluções</a>
 <a class="pg-nav" href="#funcionalidades">Funcionalidades</a>
@@ -419,6 +425,6 @@ a:focus-visible,button:focus-visible{outline:2px solid #8CC8F2;outline-offset:3p
 
 </div>
 <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-<script src="assets/site.js?v=9"></script>
+<script src="assets/site.js?v=10"></script>
 </body>
 </html>
