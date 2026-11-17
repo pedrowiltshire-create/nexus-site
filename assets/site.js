@@ -200,7 +200,7 @@
     var map = new mgl.Map({
       container: 'pg-map', style: style,
       center: [-50, -14], zoom: 2.7, pitch: 0, bearing: 0, maxPitch: 75,
-      maxTileCacheSize: 2000, fadeDuration: 200, refreshExpiredTiles: false,
+      fadeDuration: 200,
       attributionControl: { compact: true },
       cooperativeGestures: true,
       locale: {
