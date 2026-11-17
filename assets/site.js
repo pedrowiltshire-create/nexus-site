@@ -208,7 +208,7 @@
     });
     map.addControl(new mgl.NavigationControl({ visualizePitch: true }), 'top-right');
     map.addControl(new mgl.FullscreenControl(), 'top-right');
-    var terrainOn = true, orbitOn = !reduce, current = null, userMoving = false;
+    var terrainOn = true, orbitOn = !reduce, current = null;
 
     map.on('style.load', function () {
       try { map.setProjection({ type: 'globe' }); } catch (e) {}
@@ -235,13 +235,16 @@
       list.appendChild(b);
     });
 
+    var token = 0; // cada voo/interação gera um novo "token"; animações antigas param sozinhas
     function fly(i) {
-      var p = PLACES[i]; current = p; userMoving = false;
+      var p = PLACES[i]; current = p;
+      token++; var my = token;
       [].forEach.call(list.children, function (c, k) { c.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
       map.stop();
       var bearing = (Math.random() * 120) - 60;
       // voo longo e suave: sobe, atravessa e mergulha inclinado sobre o local
-      map.flyTo({ center: [p.lng, p.lat], zoom: p.zoom, pitch: 64, bearing: bearing, speed: 0.55, curve: 1.7, essential: true, duration: reduce ? 0 : undefined });
+      map.flyTo({ center: [p.lng, p.lat], zoom: p.zoom, pitch: 64, bearing: bearing, speed: 0.55, curve: 1.7, essential: true });
+      map.once('moveend', function () { if (my === token) setTimeout(function () { startOrbit(my); }, 400); });
       $('pg-pc-kicker').textContent = p.kicker;
       $('pg-pc-name').textContent = p.name;
       $('pg-pc-coord').textContent = fmt(p.lat, 'N', 'S') + ' · ' + fmt(p.lng, 'L', 'O');
@@ -250,15 +253,15 @@
     }
 
     // câmera girando devagar ao redor do local depois do voo
-    function orbit() {
-      if (!orbitOn || userMoving || !current) return;
-      map.easeTo({ bearing: map.getBearing() + 40, duration: 16000, easing: function (t) { return t; }, essential: true });
+    function startOrbit(my) {
+      if (!orbitOn || my !== token || !current) return;
+      map.easeTo({ bearing: map.getBearing() + 30, duration: 12000, easing: function (t) { return t; }, essential: true });
+      map.once('moveend', function () { if (my === token) startOrbit(my); });
     }
-    map.on('moveend', function (e) { if (e && e.originalEvent) return; if (!userMoving) orbit(); });
-    ['mousedown', 'touchstart', 'wheel'].forEach(function (ev) {
-      map.getCanvas().addEventListener(ev, function () { userMoving = true; map.stop(); }, { passive: true });
-    });
-    map.on('dragend', function () { userMoving = false; });
+    function interrupt() { token++; }
+    map.on('movestart', function (e) { if (e && e.originalEvent) interrupt(); });
+    ['mousedown', 'touchstart', 'wheel'].forEach(function (ev) { map.getCanvas().addEventListener(ev, interrupt, { passive: true }); });
+    map.getContainer().addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.maplibregl-ctrl')) interrupt(); }, true);
 
     // camadas
     [].forEach.call(document.querySelectorAll('.pg-switch'), function (sw) {
@@ -268,7 +271,7 @@
         var k = sw.getAttribute('data-layer');
         if (k === 'ref') map.setLayoutProperty('ref', 'visibility', on ? 'visible' : 'none');
         if (k === 'terrain') { terrainOn = on; try { map.setTerrain(on ? { source: 'dem', exaggeration: 1.35 } : null); } catch (e) {} }
-        if (k === 'orbit') { orbitOn = on; userMoving = false; if (on) orbit(); else map.stop(); }
+        if (k === 'orbit') { orbitOn = on; token++; if (on) startOrbit(token); else map.stop(); }
       });
     });
     if (reduce) { var ob = document.querySelector('.pg-switch[data-layer="orbit"]'); if (ob) ob.setAttribute('aria-checked', 'false'); }
