@@ -211,7 +211,6 @@
         'CooperativeGesturesHandler.MobileHelpText': 'Use dois dedos para mover o mapa'
       }
     });
-    window.__nexusMap = map; // diagnóstico (remover no final)
     map.addControl(new mgl.NavigationControl({ visualizePitch: true }), 'top-right');
     map.addControl(new mgl.FullscreenControl(), 'top-right');
     var terrainOn = true, orbitOn = !reduce, current = null;
@@ -219,7 +218,8 @@
     map.on('style.load', function () {
       try { map.setProjection({ type: 'globe' }); } catch (e) {}
       applySky();
-      // o relevo 3D só entra depois que a câmera chega ao local (evita "paredes" durante o voo)
+      // o relevo é ligado uma única vez; depois só achatamos/levantamos o terreno (religar deixava o mapa em branco)
+      try { map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {}
     });
 
     // marcadores
@@ -267,10 +267,18 @@
       return Promise.all(urls.map(function (u) { return new Promise(function (ok) { var im = new Image(); im.crossOrigin = 'anonymous'; im.onload = im.onerror = ok; im.src = u; }); }));
     }
     function withTimeout(pr, ms) { return Promise.race([pr, new Promise(function (ok) { setTimeout(ok, ms); })]); }
-    // religar o relevo às vezes deixa o mapa em branco; reaplicar o céu logo depois resolve
-    function terrainOnNow() {
-      if (!terrainOn) return;
-      try { if (!map.getTerrain || !map.getTerrain()) { map.setTerrain({ source: 'dem', exaggeration: 1.35 }); applySky(); map.triggerRepaint(); } } catch (e) {}
+    var EXAG = 1.35, rampId = 0;
+    function exag(target, ms) {
+      var t = map.terrain; if (!t) return;
+      var id = ++rampId, from = t.exaggeration, t0 = performance.now();
+      if (!ms || reduce) { t.exaggeration = Math.max(0.001, target); map.triggerRepaint(); return; }
+      (function step() {
+        if (id !== rampId || !map.terrain) return;
+        var k = Math.min(1, (performance.now() - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+        map.terrain.exaggeration = Math.max(0.001, from + (target - from) * e);
+        map.triggerRepaint();
+        if (k < 1) requestAnimationFrame(step);
+      })();
     }
     var token = 0; // cada voo/interação gera um novo "token"; animações antigas param sozinhas
     function fly(i) {
@@ -278,7 +286,7 @@
       token++; var my = token;
       [].forEach.call(list.children, function (c, k) { c.setAttribute('aria-pressed', k === i ? 'true' : 'false'); });
       map.stop();
-      try { map.setTerrain(null); } catch (e) {}
+      exag(0.001, 500); // achata o relevo durante o voo (sem "paredes")
       $('pg-pc-kicker').textContent = p.kicker;
       $('pg-pc-name').textContent = p.name;
       $('pg-pc-coord').textContent = fmt(p.lat, 'N', 'S') + ' · ' + fmt(p.lng, 'L', 'O');
@@ -298,8 +306,8 @@
             map.easeTo({ zoom: p.zoom, pitch: 64, bearing: bearing, duration: 2600, easing: function (t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }, essential: true });
             map.once('moveend', function () { if (my === token) setTimeout(function () { startOrbit(my); }, 300); });
           };
-          // liga o relevo ainda com a câmera quase reta e espera ele carregar antes de inclinar
-          terrainOnNow();
+          // levanta o relevo ainda com a câmera quase reta e então inclina
+          if (terrainOn) exag(EXAG, 1800);
           var done = false; var f = function () { if (!done) { done = true; go(); } };
           map.once('idle', f); setTimeout(f, 1800);
         });
@@ -312,7 +320,7 @@
       map.easeTo({ bearing: map.getBearing() + 30, duration: 12000, easing: function (t) { return t; }, essential: true });
       map.once('moveend', function () { if (my === token) startOrbit(my); });
     }
-    function interrupt() { token++; try { if (terrainOn && map.getTerrain && map.getTerrain()) map.setTerrain({ source: 'dem', exaggeration: 1.35 }); } catch (e) {} }
+    function interrupt() { token++; if (terrainOn && map.terrain && map.terrain.exaggeration < EXAG) exag(EXAG, 600); }
     map.on('movestart', function (e) { if (e && e.originalEvent) interrupt(); });
     ['mousedown', 'touchstart', 'wheel'].forEach(function (ev) { map.getCanvas().addEventListener(ev, interrupt, { passive: true }); });
     map.getContainer().addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.maplibregl-ctrl')) interrupt(); }, true);
@@ -324,7 +332,7 @@
         sw.setAttribute('aria-checked', on ? 'true' : 'false');
         var k = sw.getAttribute('data-layer');
         if (k === 'ref') map.setLayoutProperty('ref', 'visibility', on ? 'visible' : 'none');
-        if (k === 'terrain') { terrainOn = on; if (on) terrainOnNow(); else { try { map.setTerrain(null); } catch (e) {} } }
+        if (k === 'terrain') { terrainOn = on; exag(on ? EXAG : 0.001, 900); }
         if (k === 'orbit') { orbitOn = on; token++; if (on) startOrbit(token); else map.stop(); }
       });
     });
